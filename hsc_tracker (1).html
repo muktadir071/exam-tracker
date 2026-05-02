@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>HSC Study Tracker 🌸</title>
+<link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{--pink:#ff6b9d;--purple:#a855f7;--violet:#7c3aed;--blue:#3b82f6;--teal:#14b8a6;--green:#22c55e;--orange:#f97316;--yellow:#fbbf24;--bg:#0f0a1e;--surface:#1a1030;--card:#221540;--border:rgba(168,85,247,0.2);--text:#f0e6ff;--muted:#9d84c4}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{background:var(--bg);color:var(--text);font-family:'Hind Siliguri',sans-serif;min-height:100vh;overflow-x:hidden}
+.flowers-bg{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:0;overflow:hidden}
+.flower{position:absolute;animation:floatFlower linear infinite;opacity:0}
+@keyframes floatFlower{0%{transform:translateY(110vh) rotate(0deg);opacity:0}5%{opacity:.6}95%{opacity:.4}100%{transform:translateY(-10vh) rotate(360deg);opacity:0}}
+.wrapper{position:relative;z-index:1;max-width:480px;margin:0 auto;padding:0 0 80px}
+.hero{background:linear-gradient(135deg,#1a0a3e 0%,#2d1060 50%,#1a0a3e 100%);padding:24px 20px 20px;text-align:center;border-bottom:1px solid var(--border);position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 0%,rgba(168,85,247,.3) 0%,transparent 70%)}
+.hero-title{font-family:'Nunito',sans-serif;font-size:1.6rem;font-weight:900;background:linear-gradient(135deg,#ff6b9d,#a855f7,#3b82f6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;position:relative}
+.hero-subtitle{font-size:.85rem;color:var(--muted);margin-top:4px;position:relative}
+.countdown-card{margin:16px 16px 0;background:linear-gradient(135deg,rgba(255,107,157,.15),rgba(168,85,247,.15));border:1px solid rgba(255,107,157,.3);border-radius:20px;padding:16px;text-align:center}
+.countdown-label{font-size:.75rem;color:var(--pink);font-family:'Nunito',sans-serif;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:8px}
+.countdown-numbers{display:flex;justify-content:center;gap:10px}
+.cd-unit{background:rgba(255,107,157,.1);border:1px solid rgba(255,107,157,.3);border-radius:12px;padding:8px 12px;min-width:56px}
+.cd-num{font-family:'Nunito',sans-serif;font-size:1.6rem;font-weight:900;color:var(--pink);line-height:1}
+.cd-lbl{font-size:.65rem;color:var(--muted);margin-top:2px}
+.exam-date-text{font-size:.8rem;color:var(--muted);margin-top:8px}
+.exam-date-text span{color:var(--yellow);font-weight:700}
+.overall-progress{margin:14px 16px 0;background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:16px}
+.op-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.op-title{font-family:'Nunito',sans-serif;font-size:.8rem;font-weight:700;color:var(--purple);text-transform:uppercase;letter-spacing:.5px}
+.op-pct{font-family:'Nunito',sans-serif;font-size:1.1rem;font-weight:900;color:var(--green)}
+.big-bar{height:16px;background:rgba(255,255,255,.06);border-radius:999px;overflow:hidden;position:relative}
+.big-bar-fill{height:100%;border-radius:999px;background:linear-gradient(90deg,var(--pink),var(--purple),var(--blue));transition:width .8s cubic-bezier(.34,1.56,.64,1);position:relative}
+.big-bar-fill::after{content:'';position:absolute;top:2px;bottom:2px;left:8px;right:8px;background:linear-gradient(90deg,rgba(255,255,255,.4),transparent);border-radius:999px}
+.op-stats{display:flex;gap:8px;margin-top:10px}
+.op-stat{flex:1;background:rgba(255,255,255,.04);border-radius:10px;padding:8px;text-align:center}
+.op-stat-num{font-family:'Nunito',sans-serif;font-size:1.1rem;font-weight:900}
+.op-stat-lbl{font-size:.65rem;color:var(--muted);margin-top:2px}
+.tabs{display:flex;gap:6px;padding:14px 16px 0;overflow-x:auto;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tab-btn{flex-shrink:0;padding:8px 14px;border-radius:999px;border:1px solid var(--border);background:transparent;color:var(--muted);font-family:'Hind Siliguri',sans-serif;font-size:.78rem;cursor:pointer;transition:all .25s;white-space:nowrap}
+.tab-btn.active{background:linear-gradient(135deg,var(--purple),var(--pink));border-color:transparent;color:#fff;font-weight:600;box-shadow:0 4px 15px rgba(168,85,247,.4)}
+.subject-panel{display:none;padding:14px 16px 0}
+.subject-panel.active{display:block}
+.subject-progress{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:12px 14px;margin-bottom:12px}
+.sp-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+.sp-name{font-size:.85rem;font-weight:700}
+.sp-pct{font-family:'Nunito',sans-serif;font-size:.85rem;font-weight:800}
+.mini-bar{height:8px;background:rgba(255,255,255,.06);border-radius:999px;overflow:hidden}
+.mini-bar-fill{height:100%;border-radius:999px;transition:width .6s ease}
+.paper-label{font-size:.7rem;font-weight:700;color:var(--purple);letter-spacing:.5px;text-transform:uppercase;margin:10px 0 6px;font-family:'Nunito',sans-serif;padding:0 2px}
+.chapter-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:12px 14px;margin-bottom:8px;transition:all .3s}
+.chapter-card.done{background:rgba(34,197,94,.08);border-color:rgba(34,197,94,.25)}
+.chapter-header{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.ch-num{font-family:'Nunito',sans-serif;font-size:.7rem;font-weight:800;color:var(--muted);min-width:24px}
+.ch-name{flex:1;font-size:.88rem;font-weight:600;line-height:1.3}
+.ch-badge{font-size:.65rem;padding:2px 8px;border-radius:999px;font-family:'Nunito',sans-serif;font-weight:700}
+.badge-done{background:rgba(34,197,94,.2);color:#4ade80}
+.badge-partial{background:rgba(251,191,36,.2);color:#fbbf24}
+.badge-pending{background:rgba(255,255,255,.06);color:var(--muted)}
+.ch-toggles{display:flex;gap:8px}
+.toggle-btn{flex:1;padding:7px 0;border-radius:10px;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.04);color:var(--muted);font-family:'Nunito',sans-serif;font-size:.75rem;font-weight:700;cursor:pointer;transition:all .25s;display:flex;align-items:center;justify-content:center;gap:5px}
+.toggle-btn.checked-cq{background:rgba(59,130,246,.15);border-color:rgba(59,130,246,.4);color:#60a5fa}
+.toggle-btn.checked-mcq{background:rgba(168,85,247,.15);border-color:rgba(168,85,247,.4);color:#c084fc}
+.share-section{margin:16px 16px 0;display:flex;gap:10px}
+.share-btn{flex:1;padding:14px;border-radius:16px;border:none;background:linear-gradient(135deg,var(--pink),var(--purple));color:#fff;font-family:'Hind Siliguri',sans-serif;font-size:.9rem;font-weight:700;cursor:pointer;box-shadow:0 4px 20px rgba(168,85,247,.4);transition:transform .2s;display:flex;align-items:center;justify-content:center;gap:8px}
+.share-btn:active{transform:scale(.97)}
+.reset-btn{padding:14px 16px;border-radius:16px;border:1px solid rgba(255,100,100,.3);background:rgba(255,100,100,.08);color:#f87171;font-size:1.1rem;cursor:pointer;transition:all .2s}
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.8);backdrop-filter:blur(8px);z-index:100;display:none;align-items:center;justify-content:center;padding:20px}
+.modal-overlay.show{display:flex}
+.modal{background:var(--card);border:1px solid var(--border);border-radius:24px;padding:24px;width:100%;max-width:380px;animation:modalPop .3s cubic-bezier(.34,1.56,.64,1)}
+@keyframes modalPop{from{transform:scale(.85);opacity:0}to{transform:scale(1);opacity:1}}
+.modal-title{font-family:'Nunito',sans-serif;font-size:1rem;font-weight:900;color:var(--purple);margin-bottom:12px;text-align:center}
+.share-text{background:rgba(255,255,255,.05);border:1px solid var(--border);border-radius:12px;padding:12px;font-size:.75rem;color:var(--text);word-break:break-all;max-height:140px;overflow-y:auto;margin-bottom:14px;font-family:'Nunito',sans-serif;line-height:1.5}
+.modal-actions{display:flex;gap:10px}
+.btn-copy{flex:1;padding:12px;border-radius:12px;border:none;background:linear-gradient(135deg,var(--teal),var(--blue));color:#fff;font-family:'Nunito',sans-serif;font-weight:800;font-size:.85rem;cursor:pointer}
+.btn-close{padding:12px 16px;border-radius:12px;border:1px solid var(--border);background:transparent;color:var(--muted);font-family:'Nunito',sans-serif;font-weight:700;font-size:.85rem;cursor:pointer}
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:linear-gradient(135deg,#22c55e,#14b8a6);color:#fff;padding:12px 24px;border-radius:999px;font-family:'Nunito',sans-serif;font-weight:700;font-size:.85rem;z-index:200;transition:transform .4s cubic-bezier(.34,1.56,.64,1);white-space:nowrap}
+.toast.show{transform:translateX(-50%) translateY(0)}
+.confetti-piece{position:fixed;width:8px;height:8px;border-radius:2px;z-index:300;pointer-events:none;animation:confettiFall 1.5s ease-in forwards}
+@keyframes confettiFall{0%{transform:translateY(-20px) rotate(0deg);opacity:1}100%{transform:translateY(100vh) rotate(720deg);opacity:0}}
+/* View mode */
+.pv-header{background:linear-gradient(135deg,#1a0a3e,#2d1060);padding:24px 16px;text-align:center}
+.pv-emoji{font-size:2rem;margin-bottom:8px}
+.pv-pct{font-family:'Nunito',sans-serif;font-size:2rem;font-weight:900;background:linear-gradient(135deg,#ff6b9d,#a855f7);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.pv-label{font-size:.8rem;color:var(--muted);margin-top:4px}
+.pv-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:16px}
+.pv-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:14px}
+.pv-card-title{font-size:.8rem;font-weight:700;margin-bottom:8px}
+.pv-bar{height:8px;background:rgba(255,255,255,.06);border-radius:999px;overflow:hidden;margin-bottom:6px}
+.pv-fill{height:100%;border-radius:999px}
+.pv-stat{font-family:'Nunito',sans-serif;font-size:.72rem;color:var(--muted)}
+.pv-chapters{padding:0 16px 32px}
+.pvc-subject{margin-bottom:16px}
+.pvc-title{font-size:.85rem;font-weight:700;color:var(--purple);margin-bottom:8px;padding-bottom:4px;border-bottom:1px solid var(--border)}
+.pvc-row{display:flex;align-items:center;gap:8px;padding:8px 10px;background:var(--surface);border-radius:10px;margin-bottom:4px}
+.pvc-icon{font-size:1rem;min-width:20px}
+.pvc-name{flex:1;font-size:.8rem}
+.pvc-detail{font-size:.68rem;color:var(--muted)}
+::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--border);border-radius:999px}
+</style>
+</head>
+<body>
+<div class="flowers-bg" id="flowersBg"></div>
+<div class="wrapper" id="mainApp">
+  <div class="hero">
+    <div class="hero-title">🌸 HSC Tracker</div>
+    <div class="hero-subtitle">তোমার পড়াশোনার সাথী</div>
+  </div>
+  <div class="countdown-card">
+    <div class="countdown-label">📅 পরীক্ষার কাউন্টডাউন</div>
+    <div class="countdown-numbers">
+      <div class="cd-unit"><div class="cd-num" id="cd-days">--</div><div class="cd-lbl">দিন</div></div>
+      <div class="cd-unit"><div class="cd-num" id="cd-hours">--</div><div class="cd-lbl">ঘণ্টা</div></div>
+      <div class="cd-unit"><div class="cd-num" id="cd-mins">--</div><div class="cd-lbl">মিনিট</div></div>
+      <div class="cd-unit"><div class="cd-num" id="cd-secs">--</div><div class="cd-lbl">সেকেন্ড</div></div>
+    </div>
+    <div class="exam-date-text">HSC পরীক্ষা: <span>২ জুলাই ২০২৫</span></div>
+  </div>
+  <div class="overall-progress">
+    <div class="op-header">
+      <div class="op-title">📊 সামগ্রিক অগ্রগতি</div>
+      <div class="op-pct" id="totalPct">0%</div>
+    </div>
+    <div class="big-bar"><div class="big-bar-fill" id="totalBar" style="width:0%"></div></div>
+    <div class="op-stats">
+      <div class="op-stat"><div class="op-stat-num" id="statDone" style="color:var(--green)">0</div><div class="op-stat-lbl">✅ সম্পন্ন</div></div>
+      <div class="op-stat"><div class="op-stat-num" id="statPartial" style="color:var(--yellow)">0</div><div class="op-stat-lbl">🔄 আংশিক</div></div>
+      <div class="op-stat"><div class="op-stat-num" id="statPending" style="color:var(--muted)">0</div><div class="op-stat-lbl">📌 বাকি</div></div>
+    </div>
+  </div>
+  <div class="tabs" id="tabsRow"></div>
+  <div id="panelsContainer"></div>
+  <div class="share-section">
+    <button class="share-btn" onclick="openShare()">🔗 Progress শেয়ার করো</button>
+    <button class="reset-btn" onclick="confirmReset()">🗑️</button>
+  </div>
+</div>
+
+<!-- Progress View -->
+<div id="progressView" style="display:none">
+  <div class="pv-header">
+    <div class="pv-emoji">🌸</div>
+    <div class="pv-pct" id="pvPct">0%</div>
+    <div class="pv-label" id="pvLabel">সামগ্রিক অগ্রগতি</div>
+    <div style="font-size:.72rem;color:var(--muted);margin-top:6px" id="pvDate"></div>
+  </div>
+  <div class="pv-grid" id="pvGrid"></div>
+  <div class="pv-chapters" id="pvChapters"></div>
+</div>
+
+<!-- Share Modal -->
+<div class="modal-overlay" id="shareModal">
+  <div class="modal">
+    <div class="modal-title">📤 Progress শেয়ার করো</div>
+    <div class="share-text" id="shareText"></div>
+    <div class="modal-actions">
+      <button class="btn-copy" onclick="copyShare()">📋 Copy Link</button>
+      <button class="btn-close" onclick="closeModal()">বন্ধ করো</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast">✅ Done!</div>
+
+<script>
+const SUBJECTS=[{id:'phy',name:'পদার্থ',emoji:'⚛️',color:'#3b82f6',papers:[{label:'১ম পত্র',chapters:['ভৌতজগৎ ও পরিমাপ','ভেক্টর','গতিবিদ্যা','নিউটনিয়ান বলবিদ্যা','কাজ, শক্তি ও ক্ষমতা','মহাকর্ষ ও অভিকর্ষ','পদার্থের গাঠনিক ধর্ম','পর্যাবৃত্ত গতি','তরঙ্গ','আদর্শ গ্যাস ও গ্যাসের গতিতত্ত্ব']},{label:'২য় পত্র',chapters:['তাপ গতিবিদ্যা','স্থির তড়িৎ','চল তড়িৎ','তড়িৎ প্রবাহের চৌম্বক ক্রিয়া ও চুম্বকত্ব','তড়িতচৌম্বকীয় আবেশ ও দিকপরিবর্তী প্রবাহ','জ্যামিতিক আলোকবিজ্ঞান','ভৌত আলোকবিজ্ঞান','আধুনিক পদার্থবিজ্ঞানের সূচনা','পরমাণুর মডেল ও নিউক্লিয়ার পদার্থবিজ্ঞান','সেমিকন্ডাক্টর ও ইলেকট্রনিকস','জ্যোতির্বিজ্ঞান']}]},{id:'chem',name:'রসায়ন',emoji:'🧪',color:'#22c55e',papers:[{label:'১ম পত্র',chapters:['ল্যাবরেটরির নিরাপদ ব্যবহার','গুণগত রসায়ন','মোলের পর্যায়বৃত্ত ধর্ম ও রাসায়নিক বন্ধন','রাসায়নিক পরিবর্তন','কর্মমুখী রসায়ন']},{label:'২য় পত্র',chapters:['পরিবেশ রসায়ন','জৈব রসায়ন','পরিমাণগত রসায়ন','তড়িৎ রসায়ন','অর্থনৈতিক রসায়ন']}]},{id:'bio',name:'জীববিজ্ঞান',emoji:'🧬',color:'#f97316',papers:[{label:'১ম পত্র',chapters:['কোষ ও এর গঠন','কোষ বিভাজন','কোষ রসায়ন','অণুজীব','শৈবাল ও ছত্রাক','ব্রায়োফাইটা ও টেরিডোফাইটা','নগ্নবীজী ও আবৃতবীজী উদ্ভিদ','টিস্যু ও টিস্যুতন্ত্র','উদ্ভিদ শরীরতত্ত্ব','উদ্ভিদের প্রজনন','জীবপ্রযুক্তি']},{label:'২য় পত্র',chapters:['প্রাণীর বিভিন্নতা ও শ্রেণিবিন্যাস','প্রাণীর পরিচিতি','পরিপাক ও শোষণ','রক্ত ও সঞ্চালন','শ্বাসক্রিয়া ও শ্বসন','বর্জ্য ও নিষ্কাশন','চলন ও অঙ্গচালনা','সমন্বয় ও নিয়ন্ত্রণ','মানবজীবনের ধারাবাহিকতা','মানবদেহর প্রতিরক্ষা','জিনতত্ত্ব ও বিবর্তন']}]},{id:'hmath',name:'উচ্চতর গণিত',emoji:'📐',color:'#a855f7',papers:[{label:'১ম পত্র',chapters:['ম্যাট্রিক্স ও নির্ণায়ক','ভেক্টর','সরলরেখা','বৃত্ত','বিন্যাস ও সমাবেশ','ত্রিকোণমিতিক অনুপাত','সংযুক্ত কোণের ত্রিকোণমিতিক অনুপাত','ফাংশন ও ফাংশনের লেখচিত্র','অন্তরীকরণ','যোগজীকরণ']},{label:'২য় পত্র',chapters:['বাস্তব সংখ্যা ও অসমতা','যোগাশ্রয়ী প্রোগ্রাম','জটিল সংখ্যা','বহুপদী ও বহুপদী সমীকরণ','দ্বিপদী বিস্তৃতি','কনিক','বিপরীত ত্রিকোণমিতিক ফাংশন ও ত্রিকোণমিতিক সমীকরণ','স্থিতিবিদ্যা','সমতলে বস্তুকণার গতি','বিস্তার পরিমাপ ও সম্ভাবনা']}]},{id:'ict',name:'আইসিটি',emoji:'💻',color:'#14b8a6',papers:[{label:'সকল অধ্যায়',chapters:['তথ্য ও যোগাযোগ প্রযুক্তি: বিশ্ব ও বাংলাদেশ প্রেক্ষিত','কমিউনিকেশন সিস্টেম ও নেটওয়ার্কিং','সংখ্যা পদ্ধতি ও ডিজিটাল ডিভাইস','ওয়েব ডিজাইন পরিচিতি ও HTML','প্রোগ্রামিং ভাষা']}]}];
+
+let state={};
+let prevPct=0;
+
+function loadState(){
+  try{const s=localStorage.getItem('hscT2');if(s)state=JSON.parse(s);}catch(e){}
+  SUBJECTS.forEach(s=>{
+    if(!state[s.id])state[s.id]={};
+    s.papers.forEach((p,pi)=>{
+      if(!state[s.id][pi])state[s.id][pi]={};
+      p.chapters.forEach((_,ci)=>{if(!state[s.id][pi][ci])state[s.id][pi][ci]={cq:false,mcq:false};});
+    });
+  });
+}
+function saveState(){localStorage.setItem('hscT2',JSON.stringify(state));}
+
+function buildUI(){
+  const tabsRow=document.getElementById('tabsRow');
+  const container=document.getElementById('panelsContainer');
+  tabsRow.innerHTML='';container.innerHTML='';
+  SUBJECTS.forEach((s,si)=>{
+    const tab=document.createElement('button');
+    tab.className='tab-btn'+(si===0?' active':'');
+    tab.innerHTML=s.emoji+' '+s.name;
+    tab.onclick=()=>switchTab(s.id);
+    tabsRow.appendChild(tab);
+    const panel=document.createElement('div');
+    panel.className='subject-panel'+(si===0?' active':'');
+    panel.id='panel-'+s.id;
+    panel.innerHTML=`<div class="subject-progress"><div class="sp-top"><div class="sp-name">${s.emoji} ${s.name}</div><div class="sp-pct" id="sp-pct-${s.id}" style="color:${s.color}">0%</div></div><div class="mini-bar"><div class="mini-bar-fill" id="sp-bar-${s.id}" style="width:0%;background:${s.color}"></div></div></div>`;
+    s.papers.forEach((p,pi)=>{
+      const lbl=document.createElement('div');
+      lbl.className='paper-label';
+      lbl.textContent='📖 '+p.label;
+      panel.appendChild(lbl);
+      p.chapters.forEach((ch,ci)=>{
+        const card=document.createElement('div');
+        card.className='chapter-card';
+        card.id=`card-${s.id}-${pi}-${ci}`;
+        card.innerHTML=`<div class="chapter-header"><div class="ch-num">${ci+1}</div><div class="ch-name">${ch}</div><div class="ch-badge badge-pending" id="badge-${s.id}-${pi}-${ci}">বাকি</div></div><div class="ch-toggles"><button class="toggle-btn" id="cq-${s.id}-${pi}-${ci}" onclick="toggle('${s.id}',${pi},${ci},'cq')"><span>○</span> CQ</button><button class="toggle-btn" id="mcq-${s.id}-${pi}-${ci}" onclick="toggle('${s.id}',${pi},${ci},'mcq')"><span>○</span> MCQ</button></div>`;
+        panel.appendChild(card);
+      });
+    });
+    container.appendChild(panel);
+  });
+}
+
+function switchTab(id){
+  document.querySelectorAll('.tab-btn').forEach((t,i)=>{t.classList.toggle('active',SUBJECTS[i].id===id);});
+  document.querySelectorAll('.subject-panel').forEach(p=>{p.classList.toggle('active',p.id==='panel-'+id);});
+}
+
+function toggle(sid,pi,ci,type){
+  state[sid][pi][ci][type]=!state[sid][pi][ci][type];
+  saveState();updateCardUI(sid,pi,ci);updateStats();
+}
+
+function updateCardUI(sid,pi,ci){
+  const s=state[sid][pi][ci];
+  const cqBtn=document.getElementById(`cq-${sid}-${pi}-${ci}`);
+  const mcqBtn=document.getElementById(`mcq-${sid}-${pi}-${ci}`);
+  const badge=document.getElementById(`badge-${sid}-${pi}-${ci}`);
+  const card=document.getElementById(`card-${sid}-${pi}-${ci}`);
+  if(cqBtn){cqBtn.classList.toggle('checked-cq',s.cq);cqBtn.querySelector('span').textContent=s.cq?'✅':'○';}
+  if(mcqBtn){mcqBtn.classList.toggle('checked-mcq',s.mcq);mcqBtn.querySelector('span').textContent=s.mcq?'✅':'○';}
+  const both=s.cq&&s.mcq,either=s.cq||s.mcq;
+  if(card)card.classList.toggle('done',both);
+  if(badge){badge.className='ch-badge '+(both?'badge-done':either?'badge-partial':'badge-pending');badge.textContent=both?'✅ সম্পন্ন':either?'🔄 আংশিক':'বাকি';}
+}
+
+function getSubjectStats(sid){
+  let total=0,done=0,partial=0;
+  SUBJECTS.find(s=>s.id===sid).papers.forEach((p,pi)=>{
+    p.chapters.forEach((_,ci)=>{
+      const st=state[sid][pi][ci];total++;
+      if(st.cq&&st.mcq)done++;else if(st.cq||st.mcq)partial++;
+    });
+  });
+  return{total,done,partial,pending:total-done-partial};
+}
+
+function updateStats(){
+  let totalCh=0,totalDone=0,totalPartial=0;
+  SUBJECTS.forEach(s=>{
+    const st=getSubjectStats(s.id);
+    totalCh+=st.total;totalDone+=st.done;totalPartial+=st.partial;
+    const pct=st.total>0?Math.round(((st.done+st.partial*.5)/st.total)*100):0;
+    const bar=document.getElementById(`sp-bar-${s.id}`);
+    const pctEl=document.getElementById(`sp-pct-${s.id}`);
+    if(bar)bar.style.width=pct+'%';
+    if(pctEl)pctEl.textContent=pct+'%';
+  });
+  const overallPct=totalCh>0?Math.round(((totalDone+totalPartial*.5)/totalCh)*100):0;
+  document.getElementById('totalPct').textContent=overallPct+'%';
+  document.getElementById('totalBar').style.width=overallPct+'%';
+  document.getElementById('statDone').textContent=totalDone;
+  document.getElementById('statPartial').textContent=totalPartial;
+  document.getElementById('statPending').textContent=totalCh-totalDone-totalPartial;
+  if(overallPct>0&&overallPct!==prevPct&&[25,50,75,100].includes(overallPct))launchConfetti();
+  prevPct=overallPct;
+}
+
+function refreshAllUI(){
+  SUBJECTS.forEach(s=>{s.papers.forEach((p,pi)=>{p.chapters.forEach((_,ci)=>{updateCardUI(s.id,pi,ci);});});});
+  updateStats();
+}
+
+function updateCountdown() {
+
+  // HSC Exam Date
+  const examDate = new Date(2026, 6, 2, 9, 0, 0).getTime();
+  // month index starts at 0
+  // 6 = July
+
+  const now = new Date().getTime();
+  const diff = examDate - now;
+
+  if (diff <= 0) {
+      document.getElementById('cd-days').textContent='0';
+      document.getElementById('cd-hours').textContent='00';
+      document.getElementById('cd-mins').textContent='00';
+      document.getElementById('cd-secs').textContent='00';
+      clearInterval(timer);
+      return;
+  }
+
+  const days = Math.floor(diff / (1000*60*60*24));
+  const hours = Math.floor(
+      (diff % (1000*60*60*24)) / (1000*60*60)
+  );
+  const mins = Math.floor(
+      (diff % (1000*60*60)) / (1000*60)
+  );
+  const secs = Math.floor(
+      (diff % (1000*60)) / 1000
+  );
+
+  document.getElementById('cd-days').textContent = days;
+  document.getElementById('cd-hours').textContent =
+      String(hours).padStart(2,'0');
+  document.getElementById('cd-mins').textContent =
+      String(mins).padStart(2,'0');
+  document.getElementById('cd-secs').textContent =
+      String(secs).padStart(2,'0');
+}
+
+function spawnFlower(){
+  const fl=['🌸','🌺','🌼','🌻','🌷','💐','🌹','🍀'];
+  const el=document.createElement('div');
+  el.className='flower';
+  el.textContent=fl[Math.floor(Math.random()*fl.length)];
+  el.style.left=Math.random()*100+'vw';
+  el.style.fontSize=(0.9+Math.random()*.8)+'rem';
+  const dur=10+Math.random()*12;
+  el.style.animationDuration=dur+'s';
+  el.style.animationDelay=Math.random()*4+'s';
+  document.getElementById('flowersBg').appendChild(el);
+  setTimeout(()=>el.remove(),(dur+5)*1000);
+}
+
+function openShare(){
+  const data=buildShareData();
+  const encoded=btoa(unescape(encodeURIComponent(JSON.stringify(data))));
+  const url=window.location.href.split('?')[0]+'?view='+encoded;
+  document.getElementById('shareText').textContent=url;
+  document.getElementById('shareModal').classList.add('show');
+}
+
+function buildShareData(){
+  const ticks={};
+  SUBJECTS.forEach(s=>{
+    ticks[s.id]={};
+    s.papers.forEach((p,pi)=>{
+      ticks[s.id][pi]={};
+      p.chapters.forEach((_,ci)=>{
+        const cst=state[s.id][pi][ci];
+        if(cst.cq||cst.mcq) ticks[s.id][pi][ci]=[cst.cq?1:0,cst.mcq?1:0];
+      });
+    });
+  });
+  return {d:new Date().toLocaleDateString('bn-BD'),t:ticks};
+}
+
+function copyShare(){
+  const text=document.getElementById('shareText').textContent;
+  if(navigator.clipboard){
+    navigator.clipboard.writeText(text).then(()=>{showToast('🔗 Link copied! Messenger-এ paste করো');closeModal();}).catch(()=>fallbackCopy(text));
+  } else fallbackCopy(text);
+}
+function fallbackCopy(text){
+  const ta=document.createElement('textarea');ta.value=text;document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);
+  showToast('🔗 Copied!');closeModal();
+}
+function closeModal(){document.getElementById('shareModal').classList.remove('show');}
+
+
+function renderProgressView(raw){
+  // Rebuild full data from compact ticks
+  const data={date:raw.d,subjects:[]};
+  SUBJECTS.forEach(s=>{
+    let total=0,done=0,partial=0;
+    const chapters=[];
+    s.papers.forEach((p,pi)=>{
+      p.chapters.forEach((ch,ci)=>{
+        total++;
+        const tick=(raw.t[s.id]&&raw.t[s.id][pi]&&raw.t[s.id][pi][ci])||[0,0];
+        const cq=!!tick[0],mcq=!!tick[1];
+        if(cq&&mcq)done++; else if(cq||mcq)partial++;
+        chapters.push({name:ch,cq,mcq});
+      });
+    });
+    data.subjects.push({id:s.id,name:s.name,emoji:s.emoji,color:s.color,total,done,partial,pending:total-done-partial,chapters});
+  });
+  document.getElementById('mainApp').style.display='none';
+  document.getElementById('progressView').style.display='block';
+  let totalDone=0,totalCh=0;
+  data.subjects.forEach(s=>{totalDone+=s.done;totalCh+=s.total;});
+  const overallPct=Math.round((totalDone/totalCh)*100)||0;
+  document.getElementById('pvPct').textContent=overallPct+'%';
+  document.getElementById('pvLabel').textContent='সামগ্রিক অগ্রগতি 🎯';
+  document.getElementById('pvDate').textContent='📅 '+data.date+' তারিখে শেয়ার করা';
+  const grid=document.getElementById('pvGrid');grid.innerHTML='';
+  data.subjects.forEach(s=>{
+    const pct=Math.round(((s.done+s.partial*.5)/s.total)*100)||0;
+    const card=document.createElement('div');card.className='pv-card';
+    card.innerHTML=`<div class="pv-card-title" style="color:${s.color}">${s.emoji} ${s.name}</div><div class="pv-bar"><div class="pv-fill" style="width:${pct}%;background:${s.color}"></div></div><div class="pv-stat">${s.done}/${s.total} সম্পন্ন (${pct}%)</div>`;
+    grid.appendChild(card);
+  });
+  const ch=document.getElementById('pvChapters');ch.innerHTML='';
+  data.subjects.forEach(s=>{
+    const div=document.createElement('div');div.className='pvc-subject';
+    let html=`<div class="pvc-title">${s.emoji} ${s.name}</div>`;
+    s.chapters.forEach(c=>{
+      const both=c.cq&&c.mcq,either=c.cq||c.mcq;
+      const icon=both?'✅':either?'🔄':'⬜';
+      const detail=both?'CQ ✓ MCQ ✓':c.cq?'CQ ✓':c.mcq?'MCQ ✓':'বাকি';
+      html+=`<div class="pvc-row"><span class="pvc-icon">${icon}</span><span class="pvc-name">${c.name}</span><span class="pvc-detail">${detail}</span></div>`;
+    });
+    div.innerHTML=html;ch.appendChild(div);
+  });
+}
+function launchConfetti(){
+  const colors=['#ff6b9d','#a855f7','#3b82f6','#22c55e','#fbbf24','#f97316'];
+  for(let i=0;i<40;i++){
+    setTimeout(()=>{
+      const el=document.createElement('div');el.className='confetti-piece';
+      el.style.left=Math.random()*100+'vw';el.style.top='-10px';
+      el.style.background=colors[Math.floor(Math.random()*colors.length)];
+      el.style.animationDelay=Math.random()*.5+'s';
+      document.body.appendChild(el);setTimeout(()=>el.remove(),2000);
+    },i*30);
+  }
+}
+
+function showToast(msg){
+  const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),3000);
+}
+
+function confirmReset(){
+  if(confirm('সব progress মুছে ফেলবে?')){
+    localStorage.removeItem('hscT2');state={};loadState();refreshAllUI();showToast('🗑️ Reset হয়ে গেছে');
+  }
+}
+
+document.addEventListener('DOMContentLoaded',()=>{
+  const params=new URLSearchParams(window.location.search);
+  const viewParam=params.get('view');
+  if(viewParam){
+    try{const data=JSON.parse(decodeURIComponent(escape(atob(viewParam))));renderProgressView(data);return;}catch(e){}
+  }
+  loadState();buildUI();refreshAllUI();updateCountdown();updateCountdown(); 
+  const timer = setInterval(updateCountdown,1000);
+  for(let i=0;i<6;i++)setTimeout(spawnFlower,i*600);
+  setInterval(spawnFlower,4000);
+  document.getElementById('shareModal').addEventListener('click',function(e){if(e.target===this)closeModal();});
+});
+</script>
+</body>
+</html>
